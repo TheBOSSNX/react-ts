@@ -1,29 +1,44 @@
-import { useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { InputLogin } from "./components/InputLogin";
 
 export const Login = () => {
+    const inputPasswordRef = useRef<HTMLInputElement>(null);
 
     const [email, setEmail] = useState('');
-    const [senha, setSenha] = useState('');
+    const [password, setPassword] = useState('');
 
-    const handleEntrar = () => {
-        console.log('Email: '+email);
-        console.log('Senha: '+senha);
-    }
+    const emailLength = useMemo(() => {
+        return email.length * 1000;
+    }, [email.length]);
+
+    const handleEntrar = useCallback(() => {
+        console.log(email);
+        console.log(password);
+    }, [email, password]);
 
     return (
         <div>
             <form>
-                <label>
-                    <span>Email</span>
-                    <input value={email} onChange={e => setEmail(e.target.value)}/>
-                </label>
+                <p>Quantidade de caracteres no email: {emailLength}</p>
 
-                <label>
-                    <span>Senha</span>
-                    <input type="password" value={senha} onChange={e => setSenha(e.target.value)}/>
-                </label>
+                <InputLogin
+                    label="Email"
+                    value={email}
+                    onChange={newValue => setEmail(newValue)}
+                    onPressEnter={() => inputPasswordRef.current?.focus()}
+                />
 
-                <button type="button" onClick={handleEntrar}>
+                <InputLogin
+                    label="Senha"
+                    type="password"
+                    value={password}
+                    ref={inputPasswordRef}
+                    onChange={newValue => setPassword(newValue)}
+                />
+                
+                <button
+                    type="button"
+                    onClick={handleEntrar}>
                     Entrar
                 </button>
             </form>
